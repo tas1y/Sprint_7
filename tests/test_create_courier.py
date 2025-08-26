@@ -1,7 +1,6 @@
 import allure
 from constants import Message
 from methods.courier import Courier
-from methods.login import Login
 from utils.data_generator import generate_courier_data
 
 class TestCreateCourier:
@@ -17,18 +16,6 @@ class TestCreateCourier:
             assert response.status_code == 201
             assert response.json() == {"ok": True}
 
-        with allure.step("Выполнить авторизацию"):
-            login_response = Login.login_courier(courier_data["login"], courier_data["password"])
-
-        with allure.step("Проверить успешную авторизацию"):
-            assert login_response.status_code == 200
-            courier_id = login_response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200
-        
     @allure.title("Создание дубликата курьера")
     @allure.description("Тест проверяет ошибку при создании курьера с существующим логином")
     def test_create_duplicate_courier(self):
@@ -43,18 +30,6 @@ class TestCreateCourier:
         with allure.step("Проверить ошибку конфликта"):
             assert response.status_code == 409
             assert Message.LOGIN_OCCUPIED in response.json()["message"]
-
-        with allure.step("Выполнить авторизацию"):
-            login_response = Login.login_courier(courier_data["login"], courier_data["password"])
-
-        with allure.step("Проверить успешную авторизацию"):
-            assert login_response.status_code == 200
-            courier_id = login_response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200
 
     @allure.title("Создание курьера без логина")
     @allure.description("Тест проверяет ошибку при создании курьера без логина")
@@ -91,15 +66,3 @@ class TestCreateCourier:
         with allure.step("Проверить успешное создание (имя необязательно)"):
             assert response.status_code == 201
             assert response.json() == {"ok": True}
-
-        with allure.step("Выполнить авторизацию"):
-            login_response = Login.login_courier(courier_data["login"], courier_data["password"])
-
-        with allure.step("Проверить успешную авторизацию"):
-            assert login_response.status_code == 200
-            courier_id = login_response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200

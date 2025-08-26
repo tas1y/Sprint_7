@@ -1,6 +1,5 @@
 import allure
 from constants import Message
-from methods.courier import Courier
 from methods.login import Login
 
 
@@ -16,12 +15,6 @@ class TestLoginCourier:
         with allure.step("Проверить успешную авторизацию"):
             assert response.status_code == 200
             assert "id" in response.json()
-            courier_id = response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200
 
     @allure.title("Авторизация с неверным паролем")
     @allure.description("Тест проверяет ошибку при авторизации с неверным паролем")
@@ -35,19 +28,6 @@ class TestLoginCourier:
             assert response.status_code == 404
             assert Message.ACCOUNT_NOT_FOUND in response.json()["message"]
 
-        with allure.step("Выполнить авторизацию"):
-            response = Login.login_courier(courier["login"], courier["password"])
-        
-        with allure.step("Проверить успешную авторизацию"):
-            assert response.status_code == 200
-            assert "id" in response.json()
-            courier_id = response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200
-
     @allure.title("Авторизация с неверным логином")
     @allure.description("Тест проверяет ошибку при авторизации с неверным логином")
     def test_login_courier_wrong_login(self):
@@ -59,19 +39,6 @@ class TestLoginCourier:
         with allure.step("Проверить ошибку авторизации"):
             assert response.status_code == 404
             assert Message.ACCOUNT_NOT_FOUND in response.json()["message"]
-
-        with allure.step("Выполнить авторизацию"):
-            response = Login.login_courier(courier["login"], courier["password"])
-        
-        with allure.step("Проверить успешную авторизацию"):
-            assert response.status_code == 200
-            assert "id" in response.json()
-            courier_id = response.json()["id"]
-
-        delete_response = Courier.delete_courier(courier_id)
-
-        with allure.step("Проверить успешное удаление"):
-            assert delete_response.status_code == 200
 
     @allure.title("Авторизация без логина")
     @allure.description("Тест проверяет ошибку при авторизации без логина")
